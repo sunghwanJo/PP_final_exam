@@ -21,7 +21,7 @@ class Machines():
 		print '------------------'
 		for key,value in sorted(self.products_dict.items()):
 			# 자판기에 있는 총액보다 가격이 적을경우에만 보여줌
-			if value['price'] < self.inserted_money_sum and value['number'] > 1:
+			if value['price'] <= self.inserted_money_sum and value['number'] >= 1:
 				print "[Machine]%s : %d원" % (key,value['price'])
 
 	def select_product(self, product):
@@ -35,13 +35,20 @@ class Machines():
 			# 1. product의 price가 내가 가진 금액보다 비싸면 못팜,  
 			# 2. product의 개수가 모자라면 못팜
 			# show_list_products는 출력만 안해줄뿐 처리를 막아 주진 않음 그래서 이곳에서 해줌
-			if self.inserted_money_sum > self.products_dict[product]['price'] and self.products_dict[product]['number'] > 1:
-				self.products_dict[product]['number'] = self.products_dict[product]['number']-1
-				self.inserted_money_sum -= self.products_dict[product]['price']
-				print '[ Machine ] %s 음료수 나옴'%product
-				return '[Select OK]'
+			if self.inserted_money_sum >= self.products_dict[product]['price']:
+				if self.products_dict[product]['number'] >= 1:
+					self.products_dict[product]['number'] = self.products_dict[product]['number']-1
+					self.inserted_money_sum -= self.products_dict[product]['price']
+					print '[ Machine ] %s 음료수 나옴'%product
+					return '[Select OK]'
+
+				# Show list에서 어짜피 보여주진 않지만 강제로 해커가 못된입력을 넣을때를 대비
+				else: 
+					print '개수가 모자랍니다'
+					return '[Select Error]'
+			# Show list에서 어짜피 보여주진 않지만 강제로 해커가 못된입력을 넣을때를 대비
 			else:
-				print '개수가 모자라거나, 투입된 금액이 모자랍니다' # 나중에는 같이 처리하지 말고 개수가 모자랄경우에는 [Select Error를 반환해 다시 고를 수 있게하자]
+				print '투입된 금액이 모자랍니다' 
 				return '[Select End]'
 		else:
 			print '[Machine] 메뉴를 다시 골라주세요'
