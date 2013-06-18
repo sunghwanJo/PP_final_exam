@@ -56,7 +56,9 @@ class Machines():
 
 		print '반환금 %d'%self.inserted_money_sum
 		
-
+	#자판기인지 확인하기 위한 코드
+	def __repr__(self):
+		return '<Machine>'
 
 class Human():
 	#{ 돈의종류 : 돈의갯수 }
@@ -68,9 +70,10 @@ class Human():
 		for key,value in sorted(self.my_money_dict.items()):
 			print "%d원이 %d개 있어요" % (key,value)
 
-	def insert_money(self, Machines):
-		inserted_money = raw_input('\n돈을 넣으세요(입금을 마치려면 엔터) : ')
-		
+	def insert_money(self, Machines, inserted_money):
+		if repr(Machines) != '<Machine>':
+			return '[Insert End]'
+	
 		if not inserted_money: 
 			print '입금을 종료합니다'
 			return '[Insert End]'
@@ -90,6 +93,7 @@ class Human():
 				Machines.add_money(inserted_money)
 				self.my_money_dict[inserted_money] -= 1
 				self.check_money()
+				return '[Insert OK]'
 			else:
 				self.check_money()
 				print '[!]돈이 부족합니다'
@@ -107,9 +111,11 @@ if __name__ == '__main__':
 
 	Sunghwan.check_money()
 	
-    #돈 투입하기
+    #돈 투입하기 
+	#Human 에 따로 로직을 넣어야할듯
 	while 1:
-		if Sunghwan.insert_money(machine) == '[Insert End]':
+		inserted_money = raw_input('\n돈을 넣으세요(입금을 마치려면 엔터) : ')
+		if Sunghwan.insert_money(machine, inserted_money) == '[Insert End]':
 			break
 	
 	#제품 판매
